@@ -23,7 +23,7 @@ function Routes() {
         <Stack.Screen
           name="Main"
           component={Main}
-          opations={{ title: 'Principal' }}
+          options={{ title: 'Usuarios' }}
         />
         <Stack.Screen name="User" component={User} options={User.options} />
       </Stack.Navigator>
