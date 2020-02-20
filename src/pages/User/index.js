@@ -53,8 +53,13 @@ export default class User extends Component {
   }
 
   refreshing = () => {
-    console.log('Vou executar emmmmm');
     this.setState({ refreshing: true, stars: [] }, this.componentDidMount());
+  };
+
+  handleNavigate = repository => {
+    const { navigation } = this.props;
+
+    navigation.navigate('Repository', { repository });
   };
 
   loadMore = async () => {
@@ -91,7 +96,7 @@ export default class User extends Component {
             data={stars}
             keyExtractor={star => String(star.id)}
             renderItem={({ item }) => (
-              <Starred>
+              <Starred onPress={() => this.handleNavigate(item)}>
                 <OwnerAvatar source={{ uri: item.owner.avatar_url }} />
                 <Info>
                   <Title>{item.name}</Title>
