@@ -35,6 +35,8 @@ export default class User extends Component {
     stars: [],
     user: '',
     loading: false,
+    page: 2,
+    refreshing: false,
   };
 
   async componentDidMount() {
@@ -50,8 +52,26 @@ export default class User extends Component {
     this.setState({ stars: response.data, loading: false });
   }
 
+  refreshing = () => {
+    console.log('Vou executar emmmmm');
+    this.setState({ refreshing: true, stars: [] }, this.componentDidMount());
+  };
+
+  loadMore = async () => {
+    const { page, stars, user } = this.state;
+
+    const response = await api.get(`/users/${user.login}/starred`, {
+      params: { page },
+    });
+
+    this.setState({
+      stars: page >= 2 ? [...stars, ...response.data] : response.data,
+      page: page + 1,
+    });
+  };
+
   render() {
-    const { stars, user, loading } = this.state;
+    const { stars, user, loading, refreshing } = this.state;
 
     return (
       <Container>
@@ -64,6 +84,10 @@ export default class User extends Component {
           <ActivityIndicator color="#7159c1" />
         ) : (
           <Stars
+            onRefresh={this.refreshList}
+            refreshing={refreshing}
+            onEndReachedThreshold={0.2}
+            onEndReached={this.loadMore}
             data={stars}
             keyExtractor={star => String(star.id)}
             renderItem={({ item }) => (
